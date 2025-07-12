@@ -1,14 +1,109 @@
+/*
+Package label provides typography and text labeling components for gio-shadcn applications.
+
+The label component provides semantic text rendering with consistent typography,
+variants, sizes, and theming. It supports different typography elements like
+headings, body text, captions, and muted text following shadcn/ui design principles.
+
+# Quick Start
+
+Create a basic label:
+
+	label := label.NewTypography("Hello World", label.P, "")
+
+Create a heading:
+
+	heading := label.NewTypography("Page Title", label.H1, "")
+
+Create a label with custom styling:
+
+	label := label.NewLabel(
+		label.WithLabelText("Custom Label"),
+		label.WithLabelVariant(theme.VariantSecondary),
+		label.WithLabelSize(theme.SizeLG),
+	)
+
+# Typography Elements
+
+Available typography elements:
+• H1 - Main page headings (largest, bold)
+• H2 - Section headings (large, semi-bold)
+• H3 - Subsection headings (medium, semi-bold)
+• H4 - Minor headings (base size, semi-bold)
+• P - Body text (base size, normal weight)
+• Small - Small text for captions and fine print
+• Muted - Muted text for secondary information
+
+# Variants
+
+Text variants:
+• VariantDefault - Standard text using foreground color
+• VariantSecondary - Secondary text with muted color
+• VariantDestructive - Error or warning text in red
+
+# Sizes
+
+Available sizes:
+• SizeDefault - Standard text size
+• SizeSM - Small text size
+• SizeLG - Large text size
+
+# Features
+
+• Semantic typography elements (H1-H4, P, Small, Muted)
+• Consistent text styling following shadcn/ui patterns
+• Theme integration with automatic color adaptation
+• Custom text styling support
+• Variant-based color schemes
+• Size-based font scaling
+• CSS-like class utilities support
+
+# Examples
+
+Page title with H1:
+
+	title := label.NewTypography("Welcome", label.H1, "")
+	dims := title.Layout(gtx, th)
+
+Body text paragraph:
+
+	text := label.NewTypography("This is body text content.", label.P, "")
+	dims := text.Layout(gtx, th)
+
+Small caption text:
+
+	caption := label.NewTypography("Image caption", label.Small, "")
+	dims := caption.Layout(gtx, th)
+
+Custom styled label:
+
+	label := label.NewLabel(
+		label.WithLabelText("Status: Active"),
+		label.WithLabelVariant(theme.VariantDefault),
+		label.WithTextStyle(theme.TextStyle{
+			Size:   th.Typography.FontSizeLG,
+			Weight: font.Bold,
+			Color:  &th.Colors,
+		}),
+	)
+
+Muted helper text:
+
+	helper := label.NewTypography("This field is optional", label.Muted, "")
+	dims := helper.Layout(gtx, th)
+*/
 package label
 
 import (
+	"image/color"
+
 	"gioui.org/layout"
 	"gioui.org/widget/material"
 	"github.com/bnema/gio-shadcn/theme"
 	"github.com/bnema/gio-shadcn/utils"
-	"image/color"
 )
 
-// Label represents a shadcn/ui label component
+// Label represents a shadcn/ui label component.
 type Label struct {
 	// Configuration
 	Text      string
@@ -18,46 +113,46 @@ type Label struct {
 	Size      theme.Size
 }
 
-// LabelOption is a functional option for configuring Label components
-type LabelOption func(*Label)
+// Option is a functional option for configuring Label components.
+type Option func(*Label)
 
-// WithLabelText sets the label text
-func WithLabelText(text string) LabelOption {
+// WithLabelText sets the label text.
+func WithLabelText(text string) Option {
 	return func(l *Label) {
 		l.Text = text
 	}
 }
 
-// WithTextStyle sets the label text style
-func WithTextStyle(style theme.TextStyle) LabelOption {
+// WithTextStyle sets the label text style.
+func WithTextStyle(style theme.TextStyle) Option {
 	return func(l *Label) {
 		l.TextStyle = style
 	}
 }
 
-// WithLabelClasses sets additional CSS-like classes
-func WithLabelClasses(classes string) LabelOption {
+// WithLabelClasses sets additional CSS-like classes.
+func WithLabelClasses(classes string) Option {
 	return func(l *Label) {
 		l.Classes = classes
 	}
 }
 
-// WithLabelVariant sets the label variant
-func WithLabelVariant(variant theme.Variant) LabelOption {
+// WithLabelVariant sets the label variant.
+func WithLabelVariant(variant theme.Variant) Option {
 	return func(l *Label) {
 		l.Variant = variant
 	}
 }
 
-// WithLabelSize sets the label size
-func WithLabelSize(size theme.Size) LabelOption {
+// WithLabelSize sets the label size.
+func WithLabelSize(size theme.Size) Option {
 	return func(l *Label) {
 		l.Size = size
 	}
 }
 
-// NewLabel creates a new Label with the given options
-func NewLabel(options ...LabelOption) *Label {
+// NewLabel creates a new Label with the given options.
+func NewLabel(options ...Option) *Label {
 	l := &Label{
 		Variant: theme.VariantDefault,
 		Size:    theme.SizeDefault,
@@ -70,7 +165,7 @@ func NewLabel(options ...LabelOption) *Label {
 	return l
 }
 
-// Layout renders the label
+// Layout renders the label.
 func (l *Label) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	// Parse additional classes
 	styles := utils.ParseClasses(l.Classes)
@@ -110,9 +205,9 @@ func (l *Label) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	return label.Layout(gtx)
 }
 
-// Update returns the component state (Label has no interactive state)
-func (l *Label) Update(gtx layout.Context) theme.ComponentState {
-	return &LabelState{
+// Update returns the component state (Label has no interactive state).
+func (l *Label) Update(_ layout.Context) theme.ComponentState {
+	return &State{
 		active:   false,
 		hovered:  false,
 		pressed:  false,
@@ -120,27 +215,31 @@ func (l *Label) Update(gtx layout.Context) theme.ComponentState {
 	}
 }
 
-// LabelState implements ComponentState for Label
-type LabelState struct {
+// State implements ComponentState for Label.
+type State struct {
 	active   bool
 	hovered  bool
 	pressed  bool
 	disabled bool
 }
 
-func (ls *LabelState) IsActive() bool {
+// IsActive returns true if the label is active (labels are never active).
+func (ls *State) IsActive() bool {
 	return ls.active
 }
 
-func (ls *LabelState) IsHovered() bool {
+// IsHovered returns true if the label is being hovered over (labels are never hovered).
+func (ls *State) IsHovered() bool {
 	return ls.hovered
 }
 
-func (ls *LabelState) IsPressed() bool {
+// IsPressed returns true if the label is being pressed (labels are never pressed).
+func (ls *State) IsPressed() bool {
 	return ls.pressed
 }
 
-func (ls *LabelState) IsDisabled() bool {
+// IsDisabled returns true if the label is disabled (labels are never disabled).
+func (ls *State) IsDisabled() bool {
 	return ls.disabled
 }
 
@@ -175,17 +274,17 @@ func (l *Label) applySizeToTextStyle(textStyle theme.TextStyle, th *theme.Theme)
 	return textStyle
 }
 
-// SetText sets the label text
+// SetText sets the label text.
 func (l *Label) SetText(text string) {
 	l.Text = text
 }
 
-// SetTextStyle sets the label text style
+// SetTextStyle sets the label text style.
 func (l *Label) SetTextStyle(style theme.TextStyle) {
 	l.TextStyle = style
 }
 
-// Typography component for various text elements
+// Typography component for various text elements.
 type Typography struct {
 	Text      string
 	Element   TypographyElement
@@ -193,22 +292,31 @@ type Typography struct {
 	TextStyle theme.TextStyle
 }
 
-// TypographyElement represents different typography elements
+// TypographyElement represents different typography elements.
 type TypographyElement string
 
 const (
-	H1    TypographyElement = "h1"
-	H2    TypographyElement = "h2"
-	H3    TypographyElement = "h3"
-	H4    TypographyElement = "h4"
-	P     TypographyElement = "p"
+	// H1 represents a main heading typography element.
+	H1 TypographyElement = "h1"
+	// H2 represents a section heading typography element.
+	H2 TypographyElement = "h2"
+	// H3 represents a subsection heading typography element.
+	H3 TypographyElement = "h3"
+	// H4 represents a minor heading typography element.
+	H4 TypographyElement = "h4"
+	// P represents a paragraph typography element.
+	P TypographyElement = "p"
+	// Small represents small text typography element.
 	Small TypographyElement = "small"
-	Lead  TypographyElement = "lead"
+	// Lead represents lead text typography element.
+	Lead TypographyElement = "lead"
+	// Large represents large text typography element.
 	Large TypographyElement = "large"
+	// Muted represents muted text typography element.
 	Muted TypographyElement = "muted"
 )
 
-// NewTypography creates a new typography component
+// NewTypography creates a new typography component.
 func NewTypography(text string, element TypographyElement, classes string) *Typography {
 	return &Typography{
 		Text:    text,
@@ -217,7 +325,7 @@ func NewTypography(text string, element TypographyElement, classes string) *Typo
 	}
 }
 
-// Layout renders the typography component
+// Layout renders the typography component.
 func (t *Typography) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	// Parse additional classes
 	styles := utils.ParseClasses(t.Classes)
@@ -296,17 +404,17 @@ func (t *Typography) getColorForElement(th *theme.Theme) color.NRGBA {
 	}
 }
 
-// SetText sets the typography text
+// SetText sets the typography text.
 func (t *Typography) SetText(text string) {
 	t.Text = text
 }
 
-// SetElement sets the typography element
+// SetElement sets the typography element.
 func (t *Typography) SetElement(element TypographyElement) {
 	t.Element = element
 }
 
-// SetTextStyle sets the typography text style
+// SetTextStyle sets the typography text style.
 func (t *Typography) SetTextStyle(style theme.TextStyle) {
 	t.TextStyle = style
 }

@@ -1,13 +1,114 @@
+/*
+Package utils provides utility functions and CSS-like class parsing for gio-shadcn components.
+
+This package contains helper functions for styling, class name management, and
+Tailwind CSS-like utility class parsing. It enables components to support
+CSS-like styling patterns while maintaining Go's type safety and performance.
+
+# Features
+
+• CSS-like utility class parsing (Tailwind-inspired)
+• Class name concatenation and management
+• Padding, margin, border, and styling utilities
+• Color parsing for common color names
+• Border radius and opacity parsing
+• Component variant management
+
+# Quick Start
+
+Parse utility classes:
+
+	styles := utils.ParseClasses("p-4 bg-blue rounded-lg")
+	// styles.Padding will be layout.UniformInset(unit.Dp(16))
+	// styles.Background will be blue color
+	// styles.Radius will be unit.Dp(8)
+
+Combine class names:
+
+	className := utils.ClassNames("btn", "btn-primary", conditionalClass)
+
+# Utility Classes
+
+Supported utility class patterns:
+
+Padding:
+• p-{size} - Uniform padding
+• px-{size}, py-{size} - Horizontal/vertical padding
+• pt-{size}, pr-{size}, pb-{size}, pl-{size} - Individual sides
+
+Margin:
+• m-{size} - Uniform margin
+• mx-{size}, my-{size} - Horizontal/vertical margin
+
+Background:
+• bg-{color} - Background color (red, blue, green, etc.)
+
+Border:
+• border - Default 1dp border
+• border-{color} - Border color
+
+Border Radius:
+• rounded - Default 4dp radius
+• rounded-{size} - Specific radius (sm, md, lg, xl, 2xl, 3xl, full)
+
+Opacity:
+• opacity-{value} - Opacity from 0-100
+
+# Supported Sizes
+
+Size scale (0-64):
+• 0 = 0dp
+• 1 = 4dp
+• 2 = 8dp
+• 3 = 12dp
+• 4 = 16dp
+• 6 = 24dp
+• 8 = 32dp
+• 12 = 48dp
+• 16 = 64dp
+• etc.
+
+# Examples
+
+Basic padding and background:
+
+	styles := utils.ParseClasses("p-6 bg-blue rounded")
+	// Applies 24dp padding, blue background, 4dp radius
+
+Complex styling:
+
+	styles := utils.ParseClasses("px-4 py-2 bg-white border border-gray rounded-lg opacity-90")
+	// Horizontal padding: 16dp
+	// Vertical padding: 8dp
+	// White background
+	// Gray border
+	// Large border radius
+	// 90% opacity
+
+Component integration:
+
+	// Parse classes and apply to component
+	styles := utils.ParseClasses(component.Classes)
+	if styles.Padding != (layout.Inset{}) {
+		// Apply custom padding
+		padding = styles.Padding
+	}
+	if styles.Background.A > 0 {
+		// Apply custom background color
+		bgColor = styles.Background
+	}
+*/
 package utils
 
 import (
-	"gioui.org/layout"
-	"gioui.org/unit"
 	"image/color"
 	"strings"
+
+	"gioui.org/layout"
+	"gioui.org/unit"
 )
 
-// ClassNames merges class names, similar to clsx in JavaScript
+// ClassNames merges class names, similar to clsx in JavaScript.
 func ClassNames(classes ...string) string {
 	var result []string
 	for _, class := range classes {
@@ -18,7 +119,7 @@ func ClassNames(classes ...string) string {
 	return strings.Join(result, " ")
 }
 
-// StyleUtility represents parsed utility classes
+// StyleUtility represents parsed utility classes.
 type StyleUtility struct {
 	Padding    layout.Inset
 	Margin     layout.Inset
@@ -30,13 +131,13 @@ type StyleUtility struct {
 	Opacity    float32
 }
 
-// BorderStyle represents border styling
+// BorderStyle represents border styling.
 type BorderStyle struct {
 	Color color.NRGBA
 	Width unit.Dp
 }
 
-// ParseClasses parses Tailwind-like utility classes
+// ParseClasses parses Tailwind-like utility classes.
 func ParseClasses(classes ...string) StyleUtility {
 	style := StyleUtility{
 		Opacity: 1.0,
@@ -52,6 +153,7 @@ func ParseClasses(classes ...string) StyleUtility {
 	return style
 }
 
+//nolint:gocyclo // This function has high complexity but is straightforward switch-based parsing
 func parseClass(class string, style *StyleUtility) {
 	switch {
 	// Padding classes

@@ -1,4 +1,90 @@
-// Package input provides shadcn/ui input components for Gio.
+/*
+Package input provides versatile text input components for gio-shadcn applications.
+
+The input component supports multiple input types (text, password, number, email),
+visual variants, sizes, and features like validation, placeholder text, and helper text.
+It follows shadcn/ui design principles and integrates seamlessly with the theme system.
+
+# Quick Start
+
+Create a basic text input:
+
+	input := input.Text("Enter your name...")
+
+Create a password input:
+
+	passwordInput := input.Password("Enter password")
+
+Create an email input with validation:
+
+	emailInput := input.Email("Enter email")
+
+# Input Types
+
+Available input types:
+• InputText - Standard text input
+• InputPassword - Password input with masked text
+• InputNumber - Numeric input with validation
+• InputEmail - Email input with validation
+
+# Variants
+
+Visual variants:
+• InputDefault - Standard input with border
+• InputFilled - Filled background input
+• InputGhost - Minimal input without visible border
+
+# Sizes
+
+Available sizes:
+• InputSizeSmall - Compact input for tight layouts
+• InputSizeMedium - Standard size for most use cases
+• InputSizeLarge - Large input for emphasis
+
+# Features
+
+• Multiple input types with appropriate validation
+• Placeholder text support
+• Helper text and labels
+• Error state management
+• Theme integration with automatic color adaptation
+• Keyboard event handling
+• Focus state management
+• Change and submit callbacks
+
+# Examples
+
+Text input with label and helper:
+
+	input := input.New(input.Config{
+		Type: input.InputText,
+		Placeholder: "Enter your name",
+		Label: "Full Name",
+		Helper: "Enter your first and last name",
+	})
+
+Email input with validation:
+
+	emailInput := input.New(input.Config{
+		Type: input.InputEmail,
+		Placeholder: "user@example.com",
+		Label: "Email Address",
+		Required: true,
+		OnChange: func(value string) {
+			// Validate email format
+		},
+	})
+
+Password input:
+
+	passwordInput := input.New(input.Config{
+		Type: input.InputPassword,
+		Placeholder: "Enter secure password",
+		Label: "Password",
+		Helper: "Must be at least 8 characters",
+		Required: true,
+	})
+*/
 package input
 
 import (
@@ -16,35 +102,35 @@ import (
 	"github.com/bnema/gio-shadcn/theme"
 )
 
-// InputType represents the type of input field.
-type InputType string
+// Type represents the type of input field.
+type Type string
 
 // Input types.
 const (
-	InputText     InputType = "text"
-	InputPassword InputType = "password"
-	InputNumber   InputType = "number"
-	InputEmail    InputType = "email"
+	InputText     Type = "text"
+	InputPassword Type = "password"
+	InputNumber   Type = "number"
+	InputEmail    Type = "email"
 )
 
-// InputVariant represents the visual variant of the input.
-type InputVariant string
+// Variant represents the visual variant of the input.
+type Variant string
 
 // Input variants.
 const (
-	InputDefault InputVariant = "default"
-	InputFilled  InputVariant = "filled"
-	InputGhost   InputVariant = "ghost"
+	InputDefault Variant = "default"
+	InputFilled  Variant = "filled"
+	InputGhost   Variant = "ghost"
 )
 
-// InputSize represents the size of the input.
-type InputSize string
+// Size represents the size of the input.
+type Size string
 
 // Input sizes.
 const (
-	InputSizeSmall  InputSize = "sm"
-	InputSizeMedium InputSize = "md"
-	InputSizeLarge  InputSize = "lg"
+	InputSizeSmall  Size = "sm"
+	InputSizeMedium Size = "md"
+	InputSizeLarge  Size = "lg"
 )
 
 // Input represents a shadcn/ui input component.
@@ -55,9 +141,9 @@ type Input struct {
 	// Configuration
 	Placeholder string
 	Value       string
-	Type        InputType
-	Variant     InputVariant
-	Size        InputSize
+	Type        Type
+	Variant     Variant
+	Size        Size
 	Disabled    bool
 	Error       bool
 	Required    bool
@@ -76,81 +162,81 @@ type Input struct {
 	focused   bool
 }
 
-// InputOption is a functional option for configuring Input components
-type InputOption func(*Input)
+// Option is a functional option for configuring Input components.
+type Option func(*Input)
 
-// WithPlaceholder sets the input placeholder
-func WithPlaceholder(placeholder string) InputOption {
+// WithPlaceholder sets the input placeholder.
+func WithPlaceholder(placeholder string) Option {
 	return func(i *Input) {
 		i.Placeholder = placeholder
 	}
 }
 
-// WithInputType sets the input type
-func WithInputType(inputType InputType) InputOption {
+// WithInputType sets the input type.
+func WithInputType(inputType Type) Option {
 	return func(i *Input) {
 		i.Type = inputType
 	}
 }
 
-// WithInputVariant sets the input variant
-func WithInputVariant(variant InputVariant) InputOption {
+// WithInputVariant sets the input variant.
+func WithInputVariant(variant Variant) Option {
 	return func(i *Input) {
 		i.Variant = variant
 	}
 }
 
-// WithInputSize sets the input size
-func WithInputSize(size InputSize) InputOption {
+// WithInputSize sets the input size.
+func WithInputSize(size Size) Option {
 	return func(i *Input) {
 		i.Size = size
 	}
 }
 
-// WithLabel sets the input label
-func WithLabel(label string) InputOption {
+// WithLabel sets the input label.
+func WithLabel(label string) Option {
 	return func(i *Input) {
 		i.Label = label
 	}
 }
 
-// WithHelper sets the helper text
-func WithHelper(helper string) InputOption {
+// WithHelper sets the helper text.
+func WithHelper(helper string) Option {
 	return func(i *Input) {
 		i.Helper = helper
 	}
 }
 
-// WithRequired sets the required state
-func WithRequired(required bool) InputOption {
+// WithRequired sets the required state.
+func WithRequired(required bool) Option {
 	return func(i *Input) {
 		i.Required = required
 	}
 }
 
-// WithDisabled sets the disabled state
-func WithInputDisabled(disabled bool) InputOption {
+// WithInputDisabled sets the disabled state.
+func WithInputDisabled(disabled bool) Option {
 	return func(i *Input) {
 		i.Disabled = disabled
 	}
 }
 
-// WithOnChange sets the change callback
-func WithOnChange(onChange func(string)) InputOption {
+// WithOnChange sets the change callback.
+func WithOnChange(onChange func(string)) Option {
 	return func(i *Input) {
 		i.OnChange = onChange
 	}
 }
 
-// WithOnSubmit sets the submit callback
-func WithOnSubmit(onSubmit func()) InputOption {
+// WithOnSubmit sets the submit callback.
+func WithOnSubmit(onSubmit func()) Option {
 	return func(i *Input) {
 		i.OnSubmit = onSubmit
 	}
 }
 
-// NewInput creates a new Input with the given options
-func NewInput(options ...InputOption) *Input {
+// NewInput creates a new Input with the given options.
+func NewInput(options ...Option) *Input {
 	i := &Input{
 		Type:    InputText,
 		Variant: InputDefault,
@@ -270,8 +356,9 @@ func (i *Input) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	return dims
 }
 
-func (i *Input) Update(gtx layout.Context) theme.ComponentState {
-	return &InputState{
+// Update returns the component state for Input.
+func (i *Input) Update(_ layout.Context) theme.ComponentState {
+	return &State{
 		active:   i.focused,
 		hovered:  false, // TODO: Add hover detection
 		pressed:  false,
@@ -279,26 +366,31 @@ func (i *Input) Update(gtx layout.Context) theme.ComponentState {
 	}
 }
 
-type InputState struct {
+// State implements ComponentState for Input.
+type State struct {
 	active   bool
 	hovered  bool
 	pressed  bool
 	disabled bool
 }
 
-func (is *InputState) IsActive() bool {
+// IsActive returns true if the input is active (focused).
+func (is *State) IsActive() bool {
 	return is.active
 }
 
-func (is *InputState) IsHovered() bool {
+// IsHovered returns true if the input is being hovered over.
+func (is *State) IsHovered() bool {
 	return is.hovered
 }
 
-func (is *InputState) IsPressed() bool {
+// IsPressed returns true if the input is being pressed.
+func (is *State) IsPressed() bool {
 	return is.pressed
 }
 
-func (is *InputState) IsDisabled() bool {
+// IsDisabled returns true if the input is disabled.
+func (is *State) IsDisabled() bool {
 	return is.disabled
 }
 
@@ -402,13 +494,13 @@ func Email(placeholder string) *Input {
 }
 
 // WithVariant sets the input variant.
-func (i *Input) WithVariant(variant InputVariant) *Input {
+func (i *Input) WithVariant(variant Variant) *Input {
 	i.Variant = variant
 	return i
 }
 
 // WithSize sets the input size.
-func (i *Input) WithSize(size InputSize) *Input {
+func (i *Input) WithSize(size Size) *Input {
 	i.Size = size
 	return i
 }

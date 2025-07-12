@@ -1,3 +1,53 @@
+/*
+Package card provides a flexible container component for gio-shadcn applications.
+
+The card component serves as a versatile container for grouping related content
+with consistent styling, padding, and theming. It follows shadcn/ui design
+principles and integrates seamlessly with the theme system.
+
+# Quick Start
+
+Create a basic card:
+
+	card := card.New(card.Config{
+		Variant: theme.VariantDefault,
+	})
+
+Use as a container:
+
+	dims := card.Layout(gtx, th, func(gtx layout.Context) layout.Dimensions {
+		// Your content here
+		return widget.Layout(gtx)
+	})
+
+# Features
+
+• Consistent container styling following shadcn/ui patterns
+• Automatic theme integration with proper colors and spacing
+• Customizable padding and border radius
+• Support for CSS-like class utilities
+• Flexible content layout with layout function parameter
+• Proper background and border rendering
+
+# Examples
+
+Basic card with content:
+
+	card := card.New(card.Config{})
+	dims := card.Layout(gtx, th, func(gtx layout.Context) layout.Dimensions {
+		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
+			layout.Rigid(titleWidget),
+			layout.Rigid(contentWidget),
+		)
+	})
+
+Card with custom padding:
+
+	card := card.New(card.Config{
+		Variant: theme.VariantDefault,
+	})
+	// Custom padding applied in Layout call
+*/
 package card
 
 import (
@@ -12,7 +62,7 @@ import (
 	"github.com/bnema/gio-shadcn/utils"
 )
 
-// Card represents a shadcn/ui card component
+// Card represents a shadcn/ui card component.
 type Card struct {
 	// Configuration
 	Variant theme.Variant
@@ -20,32 +70,32 @@ type Card struct {
 	Padding layout.Inset
 }
 
-// CardOption is a functional option for configuring Card components
-type CardOption func(*Card)
+// Option is a functional option for configuring Card components.
+type Option func(*Card)
 
-// WithCardVariant sets the card variant
-func WithCardVariant(variant theme.Variant) CardOption {
+// WithCardVariant sets the card variant.
+func WithCardVariant(variant theme.Variant) Option {
 	return func(c *Card) {
 		c.Variant = variant
 	}
 }
 
-// WithCardClasses sets additional CSS-like classes
-func WithCardClasses(classes string) CardOption {
+// WithCardClasses sets additional CSS-like classes.
+func WithCardClasses(classes string) Option {
 	return func(c *Card) {
 		c.Classes = classes
 	}
 }
 
-// WithCardPadding sets custom padding
-func WithCardPadding(padding layout.Inset) CardOption {
+// WithCardPadding sets custom padding.
+func WithCardPadding(padding layout.Inset) Option {
 	return func(c *Card) {
 		c.Padding = padding
 	}
 }
 
-// NewCard creates a new Card with the given options
-func NewCard(options ...CardOption) *Card {
+// NewCard creates a new Card with the given options.
+func NewCard(options ...Option) *Card {
 	c := &Card{
 		Variant: theme.VariantDefault,
 		Padding: layout.Inset{Top: 24, Right: 24, Bottom: 24, Left: 24},
@@ -58,14 +108,14 @@ func NewCard(options ...CardOption) *Card {
 	return c
 }
 
-// Config represents card configuration
+// Config represents card configuration.
 type Config struct {
 	Variant theme.Variant
 	Classes string
 	Padding layout.Inset
 }
 
-// New creates a new card with the given configuration
+// New creates a new card with the given configuration.
 func New(config Config) *Card {
 	return &Card{
 		Variant: config.Variant,
@@ -74,10 +124,10 @@ func New(config Config) *Card {
 	}
 }
 
-// Layout renders the card with the given content
+// Layout renders the card with the given content.
 func (c *Card) Layout(gtx layout.Context, th *theme.Theme, content layout.Widget) layout.Dimensions {
 	// Get variant configuration
-	variant := utils.GetCardVariant(c.Variant, &th.Colors)
+	variant := theme.GetCardVariant(c.Variant, &th.Colors)
 
 	// Parse additional classes
 	styles := utils.ParseClasses(c.Classes)
@@ -139,8 +189,9 @@ func (c *Card) Layout(gtx layout.Context, th *theme.Theme, content layout.Widget
 	)
 }
 
-func (c *Card) Update(gtx layout.Context) theme.ComponentState {
-	return &CardState{
+// Update returns the component state for Card.
+func (c *Card) Update(_ layout.Context) theme.ComponentState {
+	return &State{
 		active:   false,
 		hovered:  false,
 		pressed:  false,
@@ -148,44 +199,49 @@ func (c *Card) Update(gtx layout.Context) theme.ComponentState {
 	}
 }
 
-type CardState struct {
+// State implements ComponentState for Card.
+type State struct {
 	active   bool
 	hovered  bool
 	pressed  bool
 	disabled bool
 }
 
-func (cs *CardState) IsActive() bool {
+// IsActive returns true if the card is active.
+func (cs *State) IsActive() bool {
 	return cs.active
 }
 
-func (cs *CardState) IsHovered() bool {
+// IsHovered returns true if the card is being hovered over.
+func (cs *State) IsHovered() bool {
 	return cs.hovered
 }
 
-func (cs *CardState) IsPressed() bool {
+// IsPressed returns true if the card is being pressed.
+func (cs *State) IsPressed() bool {
 	return cs.pressed
 }
 
-func (cs *CardState) IsDisabled() bool {
+// IsDisabled returns true if the card is disabled.
+func (cs *State) IsDisabled() bool {
 	return cs.disabled
 }
 
-// CardHeader represents a card header component
-type CardHeader struct {
+// Header represents a card header component.
+type Header struct {
 	Classes string
 	Padding layout.Inset
 }
 
-// NewHeader creates a new card header
-func NewHeader(classes string) *CardHeader {
-	return &CardHeader{
+// NewHeader creates a new card header.
+func NewHeader(classes string) *Header {
+	return &Header{
 		Classes: classes,
 	}
 }
 
-// Layout renders the card header
-func (h *CardHeader) Layout(gtx layout.Context, th *theme.Theme, content layout.Widget) layout.Dimensions {
+// Layout renders the card header.
+func (h *Header) Layout(gtx layout.Context, th *theme.Theme, content layout.Widget) layout.Dimensions {
 	// Parse additional classes
 	styles := utils.ParseClasses(h.Classes)
 
@@ -208,21 +264,21 @@ func (h *CardHeader) Layout(gtx layout.Context, th *theme.Theme, content layout.
 	return padding.Layout(gtx, content)
 }
 
-// CardContent represents a card content component
-type CardContent struct {
+// Content represents a card content component.
+type Content struct {
 	Classes string
 	Padding layout.Inset
 }
 
-// NewContent creates a new card content
-func NewContent(classes string) *CardContent {
-	return &CardContent{
+// NewContent creates a new card content.
+func NewContent(classes string) *Content {
+	return &Content{
 		Classes: classes,
 	}
 }
 
-// Layout renders the card content
-func (c *CardContent) Layout(gtx layout.Context, th *theme.Theme, content layout.Widget) layout.Dimensions {
+// Layout renders the card content.
+func (c *Content) Layout(gtx layout.Context, th *theme.Theme, content layout.Widget) layout.Dimensions {
 	// Parse additional classes
 	styles := utils.ParseClasses(c.Classes)
 
@@ -245,21 +301,21 @@ func (c *CardContent) Layout(gtx layout.Context, th *theme.Theme, content layout
 	return padding.Layout(gtx, content)
 }
 
-// CardFooter represents a card footer component
-type CardFooter struct {
+// Footer represents a card footer component.
+type Footer struct {
 	Classes string
 	Padding layout.Inset
 }
 
-// NewFooter creates a new card footer
-func NewFooter(classes string) *CardFooter {
-	return &CardFooter{
+// NewFooter creates a new card footer.
+func NewFooter(classes string) *Footer {
+	return &Footer{
 		Classes: classes,
 	}
 }
 
-// Layout renders the card footer
-func (f *CardFooter) Layout(gtx layout.Context, th *theme.Theme, content layout.Widget) layout.Dimensions {
+// Layout renders the card footer.
+func (f *Footer) Layout(gtx layout.Context, th *theme.Theme, content layout.Widget) layout.Dimensions {
 	// Parse additional classes
 	styles := utils.ParseClasses(f.Classes)
 
@@ -282,22 +338,22 @@ func (f *CardFooter) Layout(gtx layout.Context, th *theme.Theme, content layout.
 	return padding.Layout(gtx, content)
 }
 
-// CardTitle represents a card title component
-type CardTitle struct {
+// Title represents a card title component.
+type Title struct {
 	Text    string
 	Classes string
 }
 
-// NewTitle creates a new card title
-func NewTitle(text string, classes string) *CardTitle {
-	return &CardTitle{
+// NewTitle creates a new card title.
+func NewTitle(text string, classes string) *Title {
+	return &Title{
 		Text:    text,
 		Classes: classes,
 	}
 }
 
-// Layout renders the card title
-func (t *CardTitle) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
+// Layout renders the card title.
+func (t *Title) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	textStyle := th.Typography.H3(&th.Colors)
 
 	return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
@@ -310,22 +366,22 @@ func (t *CardTitle) Layout(gtx layout.Context, th *theme.Theme) layout.Dimension
 	)
 }
 
-// CardDescription represents a card description component
-type CardDescription struct {
+// Description represents a card description component.
+type Description struct {
 	Text    string
 	Classes string
 }
 
-// NewDescription creates a new card description
-func NewDescription(text string, classes string) *CardDescription {
-	return &CardDescription{
+// NewDescription creates a new card description.
+func NewDescription(text string, classes string) *Description {
+	return &Description{
 		Text:    text,
 		Classes: classes,
 	}
 }
 
-// Layout renders the card description
-func (d *CardDescription) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
+// Layout renders the card description.
+func (d *Description) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	textStyle := th.Typography.BodySmall(&th.Colors)
 
 	return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
@@ -338,7 +394,7 @@ func (d *CardDescription) Layout(gtx layout.Context, th *theme.Theme) layout.Dim
 	)
 }
 
-// Helper function to render text
+// Helper function to render text.
 func renderText(gtx layout.Context, style theme.TextStyle, text string) layout.Dimensions {
 	// Create a material theme and label for text rendering
 	thMat := material.NewTheme()
