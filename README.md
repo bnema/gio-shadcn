@@ -2,7 +2,7 @@
 
 A Go port of [shadcn/ui](https://ui.shadcn.com/) for [Gio](https://gioui.org/), bringing beautiful, accessible, and customizable UI components to your Gio applications.
 
-![Demo App](assets/demo-app.png)
+<img src="assets/demo-app.png" alt="Demo App" width="800" style="max-width: 100%; height: auto;">
 
 ## Overview
 
