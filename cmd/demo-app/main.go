@@ -1,3 +1,60 @@
+/*
+Package main provides a comprehensive demo application showcasing gio-shadcn components.
+
+This demo application demonstrates all available gio-shadcn UI components in action,
+including theming, interactivity, and responsive design. It serves as both a
+functional example and a testing ground for the component library.
+
+# Features
+
+• Complete showcase of all available components
+• Light/dark theme switching with live preview
+• Interactive zoom functionality (Ctrl+/-, Ctrl+0)
+• Custom frameless window with titlebar
+• Responsive layout design
+• Component interaction examples
+• Theme integration demonstration
+
+# Usage
+
+Run the demo application:
+
+	go run ./cmd/demo-app
+
+# Components Demonstrated
+
+• Button - All variants (default, destructive, outline, secondary, ghost, link)
+• Card - Container with structured content
+• Input - Text input with placeholder and validation
+• Label - Typography elements (H1-H4, body text, small text)
+• Titlebar - Custom window controls and branding
+
+# Interactive Features
+
+Keyboard shortcuts:
+• Ctrl + Plus/Equals - Zoom in
+• Ctrl + Minus - Zoom out
+• Ctrl + 0 - Reset zoom to 100%
+
+UI controls:
+• Theme toggle button (light/dark mode switching)
+• Zoom control buttons with current zoom display
+• Window controls (minimize, maximize, close)
+• Interactive component examples
+
+# Architecture
+
+The demo follows a clean architecture pattern:
+• Theme management with runtime switching
+• Component state management
+• Event handling for keyboard and mouse
+• Responsive layout with zoom support
+• Window management for frameless design
+
+This demo serves as the primary example for integrating gio-shadcn
+components into real applications and demonstrates best practices
+for theme usage, component composition, and user interaction.
+*/
 package main
 
 import (
@@ -36,10 +93,28 @@ func main() {
 	app.Main()
 }
 
-// updateWindowColors updates the window colors based on the current theme
+// updateWindowColors updates the window colors based on the current theme.
 func updateWindowColors(w *app.Window, th *theme.Theme) {
 	w.Option(app.NavigationColor(th.Colors.Background))
 	w.Option(app.StatusColor(th.Colors.Background))
+}
+
+// layoutButtonRow renders a horizontal row of buttons with spacing.
+func layoutButtonRow(gtx layout.Context, th *theme.Theme, buttons ...*button.Button) layout.Dimensions {
+	children := make([]layout.FlexChild, 0, len(buttons)*2)
+	for i, btn := range buttons {
+		btn := btn // capture loop variable
+		children = append(children, layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+			return btn.Layout(gtx, th)
+		}))
+		// Add spacing between buttons (except after the last one)
+		if i < len(buttons)-1 {
+			children = append(children, layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+				return layout.Spacer{Width: th.Spacing.Space2}.Layout(gtx)
+			}))
+		}
+	}
+	return layout.Flex{Axis: layout.Horizontal}.Layout(gtx, children...)
 }
 
 func run(w *app.Window) error {
@@ -49,10 +124,11 @@ func run(w *app.Window) error {
 	// Set initial window colors to match theme
 	updateWindowColors(w, th)
 
-	// Initialize title bar
+	// Initialize title bar with secondary variant
 	tb := titlebar.NewTitleBar(
 		titlebar.WithTitle("Gio-shadcn Demo"),
 		titlebar.WithWindow(w),
+		titlebar.WithVariant(theme.VariantSecondary),
 	)
 
 	// Zoom state
@@ -412,49 +488,13 @@ func run(w *app.Window) error {
 											return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx)
 										}),
 										layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-											return layout.Flex{
-												Axis: layout.Horizontal,
-											}.Layout(gtx,
-												layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-													return primaryBtn.Layout(gtx, th)
-												}),
-												layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-													return layout.Spacer{Width: th.Spacing.Space2}.Layout(gtx)
-												}),
-												layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-													return destructiveBtn.Layout(gtx, th)
-												}),
-												layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-													return layout.Spacer{Width: th.Spacing.Space2}.Layout(gtx)
-												}),
-												layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-													return outlineBtn.Layout(gtx, th)
-												}),
-											)
+											return layoutButtonRow(gtx, th, primaryBtn, destructiveBtn, outlineBtn)
 										}),
 										layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 											return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx)
 										}),
 										layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-											return layout.Flex{
-												Axis: layout.Horizontal,
-											}.Layout(gtx,
-												layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-													return secondaryBtn.Layout(gtx, th)
-												}),
-												layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-													return layout.Spacer{Width: th.Spacing.Space2}.Layout(gtx)
-												}),
-												layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-													return ghostBtn.Layout(gtx, th)
-												}),
-												layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-													return layout.Spacer{Width: th.Spacing.Space2}.Layout(gtx)
-												}),
-												layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-													return linkBtn.Layout(gtx, th)
-												}),
-											)
+											return layoutButtonRow(gtx, th, secondaryBtn, ghostBtn, linkBtn)
 										}),
 									)
 								}),
