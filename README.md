@@ -2,6 +2,8 @@
 
 A Go port of [shadcn/ui](https://ui.shadcn.com/) for [Gio](https://gioui.org/), bringing beautiful, accessible, and customizable UI components to your Gio applications.
 
+![Demo App](assets/demo-app.png)
+
 ## Features
 
 - 🎨 **Themeable**: JSON-based theme configuration with light/dark mode support
@@ -290,15 +292,71 @@ if err := theme.ValidateTheme(th); err != nil {
 }
 ```
 
-## Available Components
+## Component Progress
 
-| Component | Import Path | Description |
-|-----------|-------------|-------------|
-| Button | `github.com/bnema/gio-shadcn/components/button` | Customizable button with variants and sizes |
-| Card | `github.com/bnema/gio-shadcn/components/card` | Flexible container for content |
-| Input | `github.com/bnema/gio-shadcn/components/input` | Text input with validation |
-| Label | `github.com/bnema/gio-shadcn/components/label` | Typography component |
-| Titlebar | `github.com/bnema/gio-shadcn/components/titlebar` | Window titlebar component |
+### ✅ Ported Components (5/51)
+
+| Component | Import Path | Status | Description |
+|-----------|-------------|--------|-------------|
+| Button | `github.com/bnema/gio-shadcn/components/button` | ✅ Complete | Customizable button with variants and sizes |
+| Card | `github.com/bnema/gio-shadcn/components/card` | ✅ Complete | Flexible container for content |
+| Input | `github.com/bnema/gio-shadcn/components/input` | ✅ Complete | Text input with validation |
+| Label | `github.com/bnema/gio-shadcn/components/label` | ✅ Complete | Typography component |
+| Titlebar | `github.com/bnema/gio-shadcn/components/titlebar` | ✅ Complete | Window titlebar component |
+
+### 🚧 Missing Components (46/51)
+
+| Component | Priority | Description |
+|-----------|----------|-------------|
+| Accordion | High | Collapsible content areas |
+| Alert | High | Display important messages |
+| Alert Dialog | High | Modal dialog for alerts |
+| Aspect Ratio | Medium | Maintain aspect ratios |
+| Avatar | Medium | User profile pictures |
+| Badge | High | Small status indicators |
+| Breadcrumb | Medium | Navigation breadcrumbs |
+| Calendar | Medium | Date selection |
+| Carousel | Low | Image/content slider |
+| Chart | Low | Data visualization |
+| Checkbox | High | Boolean input control |
+| Collapsible | Medium | Expandable content |
+| Combobox | High | Searchable select |
+| Command | Medium | Command palette |
+| Context Menu | Medium | Right-click menus |
+| Data Table | High | Tabular data display |
+| Date Picker | High | Date selection input |
+| Dialog | High | Modal dialogs |
+| Drawer | Medium | Slide-out panels |
+| Dropdown Menu | High | Dropdown selections |
+| React Hook Form | N/A | Form handling (React specific) |
+| Hover Card | Low | Hover tooltips |
+| Input OTP | Medium | One-time password input |
+| Menubar | Medium | Application menu bar |
+| Navigation Menu | High | Site navigation |
+| Pagination | High | Page navigation |
+| Popover | Medium | Floating content |
+| Progress | High | Progress indicators |
+| Radio Group | High | Single selection from options |
+| Resizable | Low | Resizable panels |
+| Scroll-area | Medium | Custom scrollbars |
+| Select | High | Dropdown selection |
+| Separator | High | Visual dividers |
+| Sheet | Medium | Side panels |
+| Sidebar | High | Navigation sidebar |
+| Skeleton | Medium | Loading placeholders |
+| Slider | High | Range input control |
+| Sonner | Low | Toast notifications |
+| Switch | High | Toggle switch |
+| Table | High | Data tables |
+| Tabs | High | Tabbed content |
+| Textarea | High | Multi-line text input |
+| Toast | High | Notification messages |
+| Toggle | High | Toggle button |
+| Toggle Group | Medium | Group of toggle buttons |
+| Tooltip | High | Hover information |
+| Typography | Medium | Text styling utilities |
+
+**Progress: 5/51 components ported (9.8%)**
 
 ## Component API
 
