@@ -191,6 +191,38 @@ func (i *Input) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	return dims
 }
 
+func (i *Input) Update(gtx layout.Context) theme.ComponentState {
+	return &InputState{
+		active:   i.focused,
+		hovered:  false, // TODO: Add hover detection
+		pressed:  false,
+		disabled: i.Disabled,
+	}
+}
+
+type InputState struct {
+	active   bool
+	hovered  bool
+	pressed  bool
+	disabled bool
+}
+
+func (is *InputState) IsActive() bool {
+	return is.active
+}
+
+func (is *InputState) IsHovered() bool {
+	return is.hovered
+}
+
+func (is *InputState) IsPressed() bool {
+	return is.pressed
+}
+
+func (is *InputState) IsDisabled() bool {
+	return is.disabled
+}
+
 func (i *Input) configureEditor() {
 	switch i.Type {
 	case InputPassword:

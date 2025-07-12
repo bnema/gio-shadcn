@@ -1,12 +1,15 @@
 package card
 
 import (
+	"image"
+
 	"gioui.org/layout"
 	"gioui.org/op/clip"
 	"gioui.org/op/paint"
+	"gioui.org/unit"
+	"gioui.org/widget/material"
 	"github.com/bnema/gio-shadcn/theme"
 	"github.com/bnema/gio-shadcn/utils"
-	"image"
 )
 
 // Card represents a shadcn/ui card component
@@ -15,6 +18,44 @@ type Card struct {
 	Variant theme.Variant
 	Classes string
 	Padding layout.Inset
+}
+
+// CardOption is a functional option for configuring Card components
+type CardOption func(*Card)
+
+// WithCardVariant sets the card variant
+func WithCardVariant(variant theme.Variant) CardOption {
+	return func(c *Card) {
+		c.Variant = variant
+	}
+}
+
+// WithCardClasses sets additional CSS-like classes
+func WithCardClasses(classes string) CardOption {
+	return func(c *Card) {
+		c.Classes = classes
+	}
+}
+
+// WithCardPadding sets custom padding
+func WithCardPadding(padding layout.Inset) CardOption {
+	return func(c *Card) {
+		c.Padding = padding
+	}
+}
+
+// NewCard creates a new Card with the given options
+func NewCard(options ...CardOption) *Card {
+	c := &Card{
+		Variant: theme.VariantDefault,
+		Padding: layout.Inset{Top: 24, Right: 24, Bottom: 24, Left: 24},
+	}
+
+	for _, option := range options {
+		option(c)
+	}
+
+	return c
 }
 
 // Config represents card configuration
@@ -83,7 +124,7 @@ func (c *Card) Layout(gtx layout.Context, th *theme.Theme, content layout.Widget
 			if variant.BorderWidth > 0 {
 				border := clip.Stroke{
 					Path:  rr.Path(gtx.Ops),
-					Width: variant.BorderWidth,
+					Width: float32(gtx.Dp(unit.Dp(variant.BorderWidth))),
 				}
 				paint.FillShape(gtx.Ops, variant.Border, border.Op())
 			}
@@ -96,6 +137,38 @@ func (c *Card) Layout(gtx layout.Context, th *theme.Theme, content layout.Widget
 			return padding.Layout(gtx, content)
 		}),
 	)
+}
+
+func (c *Card) Update(gtx layout.Context) theme.ComponentState {
+	return &CardState{
+		active:   false,
+		hovered:  false,
+		pressed:  false,
+		disabled: false,
+	}
+}
+
+type CardState struct {
+	active   bool
+	hovered  bool
+	pressed  bool
+	disabled bool
+}
+
+func (cs *CardState) IsActive() bool {
+	return cs.active
+}
+
+func (cs *CardState) IsHovered() bool {
+	return cs.hovered
+}
+
+func (cs *CardState) IsPressed() bool {
+	return cs.pressed
+}
+
+func (cs *CardState) IsDisabled() bool {
+	return cs.disabled
 }
 
 // CardHeader represents a card header component
@@ -267,9 +340,18 @@ func (d *CardDescription) Layout(gtx layout.Context, th *theme.Theme) layout.Dim
 
 // Helper function to render text
 func renderText(gtx layout.Context, style theme.TextStyle, text string) layout.Dimensions {
-	// This is a simplified text rendering - in a real implementation,
-	// you'd want to use material.Label or a proper text renderer
-	return layout.Dimensions{
-		Size: gtx.Constraints.Min,
+	// Create a material theme and label for text rendering
+	thMat := material.NewTheme()
+	label := material.Label(thMat, style.Size, text)
+	// Use foreground color from the color scheme
+	if style.Color != nil {
+		label.Color = style.Color.Foreground
 	}
+
+	// Apply font weight if available
+	if style.Weight > 0 {
+		label.Font.Weight = style.Weight
+	}
+
+	return label.Layout(gtx)
 }

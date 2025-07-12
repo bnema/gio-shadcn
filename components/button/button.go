@@ -1,6 +1,7 @@
 package button
 
 import (
+	"fmt"
 	"gioui.org/layout"
 	"gioui.org/op/clip"
 	"gioui.org/op/paint"
@@ -32,6 +33,103 @@ type Button struct {
 	cachedStyles     utils.StyleUtility
 	cachedClasses    string
 	stylesCacheValid bool
+}
+
+// ButtonOption is a functional option for configuring Button components
+type ButtonOption func(*Button)
+
+// WithVariant sets the button variant
+func WithVariant(variant theme.Variant) ButtonOption {
+	return func(b *Button) {
+		b.Variant = variant
+	}
+}
+
+// WithSize sets the button size
+func WithSize(size theme.Size) ButtonOption {
+	return func(b *Button) {
+		b.Size = size
+	}
+}
+
+// WithText sets the button text
+func WithText(text string) ButtonOption {
+	return func(b *Button) {
+		b.Text = text
+	}
+}
+
+// WithIcon sets the button icon
+func WithIcon(icon *widget.Icon) ButtonOption {
+	return func(b *Button) {
+		b.Icon = icon
+	}
+}
+
+// WithOnClick sets the click handler
+func WithOnClick(onClick func()) ButtonOption {
+	return func(b *Button) {
+		b.OnClick = onClick
+	}
+}
+
+// WithDisabled sets the disabled state
+func WithDisabled(disabled bool) ButtonOption {
+	return func(b *Button) {
+		b.Disabled = disabled
+	}
+}
+
+// WithClasses sets additional CSS-like classes
+func WithClasses(classes string) ButtonOption {
+	return func(b *Button) {
+		b.Classes = classes
+	}
+}
+
+// NewButton creates a new Button with the given options
+func NewButton(options ...ButtonOption) *Button {
+	b := &Button{
+		clickable: &widget.Clickable{},
+		Variant:   theme.VariantDefault,
+		Size:      theme.SizeDefault,
+	}
+	
+	for _, option := range options {
+		option(b)
+	}
+	
+	return b
+}
+
+// ValidateButton validates that a button has all required fields
+func ValidateButton(b *Button) error {
+	if b == nil {
+		return fmt.Errorf("button cannot be nil")
+	}
+	
+	if b.clickable == nil {
+		return fmt.Errorf("button must have a clickable widget")
+	}
+	
+	if b.Text == "" && b.Icon == nil {
+		return fmt.Errorf("button must have either text or icon")
+	}
+	
+	return nil
+}
+
+// SafeLayout is a wrapper around Layout that validates the button first
+func (b *Button) SafeLayout(gtx layout.Context, th *theme.Theme) (layout.Dimensions, error) {
+	if err := ValidateButton(b); err != nil {
+		return layout.Dimensions{}, err
+	}
+	
+	if th == nil {
+		return layout.Dimensions{}, fmt.Errorf("theme cannot be nil")
+	}
+	
+	return b.Layout(gtx, th), nil
 }
 
 // Config represents button configuration
@@ -111,6 +209,38 @@ func (b *Button) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	return b.clickable.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
 		return b.drawButton(gtx, th, bgColor, fgColor, variant, padding, minHeight, fontSize, styles)
 	})
+}
+
+func (b *Button) Update(gtx layout.Context) theme.ComponentState {
+	return &ButtonState{
+		active:   b.clickable.Clicked(gtx),
+		hovered:  b.clickable.Hovered(),
+		pressed:  b.clickable.Pressed(),
+		disabled: b.Disabled,
+	}
+}
+
+type ButtonState struct {
+	active   bool
+	hovered  bool
+	pressed  bool
+	disabled bool
+}
+
+func (bs *ButtonState) IsActive() bool {
+	return bs.active
+}
+
+func (bs *ButtonState) IsHovered() bool {
+	return bs.hovered
+}
+
+func (bs *ButtonState) IsPressed() bool {
+	return bs.pressed
+}
+
+func (bs *ButtonState) IsDisabled() bool {
+	return bs.disabled
 }
 
 func (b *Button) drawButton(gtx layout.Context, th *theme.Theme, bgColor, fgColor color.NRGBA, variant utils.VariantConfig, padding layout.Inset, minHeight unit.Dp, fontSize unit.Sp, styles utils.StyleUtility) layout.Dimensions {
