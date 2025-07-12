@@ -18,24 +18,56 @@ type Label struct {
 	Size      theme.Size
 }
 
-// Config represents label configuration
-type Config struct {
-	Text      string
-	TextStyle theme.TextStyle
-	Classes   string
-	Variant   theme.Variant
-	Size      theme.Size
+// LabelOption is a functional option for configuring Label components
+type LabelOption func(*Label)
+
+// WithLabelText sets the label text
+func WithLabelText(text string) LabelOption {
+	return func(l *Label) {
+		l.Text = text
+	}
 }
 
-// New creates a new label with the given configuration
-func New(config Config) *Label {
-	return &Label{
-		Text:      config.Text,
-		TextStyle: config.TextStyle,
-		Classes:   config.Classes,
-		Variant:   config.Variant,
-		Size:      config.Size,
+// WithTextStyle sets the label text style
+func WithTextStyle(style theme.TextStyle) LabelOption {
+	return func(l *Label) {
+		l.TextStyle = style
 	}
+}
+
+// WithLabelClasses sets additional CSS-like classes
+func WithLabelClasses(classes string) LabelOption {
+	return func(l *Label) {
+		l.Classes = classes
+	}
+}
+
+// WithLabelVariant sets the label variant
+func WithLabelVariant(variant theme.Variant) LabelOption {
+	return func(l *Label) {
+		l.Variant = variant
+	}
+}
+
+// WithLabelSize sets the label size
+func WithLabelSize(size theme.Size) LabelOption {
+	return func(l *Label) {
+		l.Size = size
+	}
+}
+
+// NewLabel creates a new Label with the given options
+func NewLabel(options ...LabelOption) *Label {
+	l := &Label{
+		Variant: theme.VariantDefault,
+		Size:    theme.SizeDefault,
+	}
+
+	for _, option := range options {
+		option(l)
+	}
+
+	return l
 }
 
 // Layout renders the label
@@ -76,6 +108,40 @@ func (l *Label) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	}
 
 	return label.Layout(gtx)
+}
+
+// Update returns the component state (Label has no interactive state)
+func (l *Label) Update(gtx layout.Context) theme.ComponentState {
+	return &LabelState{
+		active:   false,
+		hovered:  false,
+		pressed:  false,
+		disabled: false,
+	}
+}
+
+// LabelState implements ComponentState for Label
+type LabelState struct {
+	active   bool
+	hovered  bool
+	pressed  bool
+	disabled bool
+}
+
+func (ls *LabelState) IsActive() bool {
+	return ls.active
+}
+
+func (ls *LabelState) IsHovered() bool {
+	return ls.hovered
+}
+
+func (ls *LabelState) IsPressed() bool {
+	return ls.pressed
+}
+
+func (ls *LabelState) IsDisabled() bool {
+	return ls.disabled
 }
 
 func (l *Label) getDefaultTextStyle(th *theme.Theme) theme.TextStyle {

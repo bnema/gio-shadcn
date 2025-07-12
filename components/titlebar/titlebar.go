@@ -23,51 +23,78 @@ type TitleBar struct {
 	isMaximized bool
 }
 
-// Config holds the configuration for a TitleBar
-type Config struct {
-	Title   string
-	Window  interface{} // *app.Window
-	OnClose func()
+// TitleBarOption is a functional option for configuring TitleBar components
+type TitleBarOption func(*TitleBar)
+
+// WithTitle sets the titlebar title
+func WithTitle(title string) TitleBarOption {
+	return func(tb *TitleBar) {
+		tb.Title = title
+	}
 }
 
-// New creates a new TitleBar instance
-func New(cfg Config) *TitleBar {
-	tb := &TitleBar{
-		Title:  cfg.Title,
-		window: &cfg.Window,
+// WithWindow sets the window reference
+func WithWindow(window interface{}) TitleBarOption {
+	return func(tb *TitleBar) {
+		tb.window = &window
 	}
+}
 
-	// Initialize window control buttons
-	tb.minimizeBtn = button.New(button.Config{
-		Text:    "−",
-		Variant: theme.VariantGhost,
-		Size:    theme.SizeSM,
-		OnClick: func() {
+// WithCloseHandler sets the close handler
+func WithCloseHandler(onClose func()) TitleBarOption {
+	return func(tb *TitleBar) {
+		// Update the close button with the custom handler
+		tb.closeBtn = button.NewButton(
+			button.WithText("✕"),
+			button.WithVariant(theme.VariantGhost),
+			button.WithSize(theme.SizeSM),
+			button.WithOnClick(func() {
+				if onClose != nil {
+					onClose()
+				} else {
+					tb.close()
+				}
+			}),
+		)
+	}
+}
+
+// NewTitleBar creates a new TitleBar with the given options
+func NewTitleBar(options ...TitleBarOption) *TitleBar {
+	tb := &TitleBar{}
+
+	// Initialize default window control buttons
+	tb.minimizeBtn = button.NewButton(
+		button.WithText("−"),
+		button.WithVariant(theme.VariantGhost),
+		button.WithSize(theme.SizeSM),
+		button.WithOnClick(func() {
 			tb.minimize()
-		},
-	})
+		}),
+	)
 
-	tb.maximizeBtn = button.New(button.Config{
-		Text:    "☐",
-		Variant: theme.VariantGhost,
-		Size:    theme.SizeSM,
-		OnClick: func() {
+	tb.maximizeBtn = button.NewButton(
+		button.WithText("☐"),
+		button.WithVariant(theme.VariantGhost),
+		button.WithSize(theme.SizeSM),
+		button.WithOnClick(func() {
 			tb.toggleMaximize()
-		},
-	})
+		}),
+	)
 
-	tb.closeBtn = button.New(button.Config{
-		Text:    "✕",
-		Variant: theme.VariantGhost,
-		Size:    theme.SizeSM,
-		OnClick: func() {
-			if cfg.OnClose != nil {
-				cfg.OnClose()
-			} else {
-				tb.close()
-			}
-		},
-	})
+	tb.closeBtn = button.NewButton(
+		button.WithText("✕"),
+		button.WithVariant(theme.VariantGhost),
+		button.WithSize(theme.SizeSM),
+		button.WithOnClick(func() {
+			tb.close()
+		}),
+	)
+
+	// Apply options
+	for _, option := range options {
+		option(tb)
+	}
 
 	return tb
 }
@@ -116,14 +143,14 @@ func (tb *TitleBar) Layout(gtx layout.Context, th *theme.Theme, w interface{}) l
 								Left: th.Spacing.Space4,
 							}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
 								// Create bold title label
-								titleLabel := label.New(label.Config{
-									Text: tb.Title,
-									TextStyle: theme.TextStyle{
+								titleLabel := label.NewLabel(
+									label.WithLabelText(tb.Title),
+									label.WithTextStyle(theme.TextStyle{
 										Size:   th.Typography.FontSizeSM,
 										Weight: font.Bold,
 										Color:  &th.Colors,
-									},
-								})
+									}),
+								)
 								return titleLabel.Layout(gtx, th)
 							})
 						}),
@@ -149,6 +176,42 @@ func (tb *TitleBar) Layout(gtx layout.Context, th *theme.Theme, w interface{}) l
 			)
 		}),
 	)
+}
+
+// Update returns the component state for titlebar buttons
+func (tb *TitleBar) Update(gtx layout.Context) theme.ComponentState {
+	return &TitlebarState{
+		minimizeHovered: tb.minimizeBtn.Update(gtx).IsHovered(),
+		maximizeHovered: tb.maximizeBtn.Update(gtx).IsHovered(),
+		closeHovered:    tb.closeBtn.Update(gtx).IsHovered(),
+		active:          false,
+		disabled:        false,
+	}
+}
+
+// TitlebarState implements ComponentState for Titlebar
+type TitlebarState struct {
+	minimizeHovered bool
+	maximizeHovered bool
+	closeHovered    bool
+	active          bool
+	disabled        bool
+}
+
+func (ts *TitlebarState) IsActive() bool {
+	return ts.active
+}
+
+func (ts *TitlebarState) IsHovered() bool {
+	return ts.minimizeHovered || ts.maximizeHovered || ts.closeHovered
+}
+
+func (ts *TitlebarState) IsPressed() bool {
+	return false // Titlebar itself is not pressable
+}
+
+func (ts *TitlebarState) IsDisabled() bool {
+	return ts.disabled
 }
 
 func (tb *TitleBar) minimize() {

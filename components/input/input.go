@@ -76,14 +76,93 @@ type Input struct {
 	focused   bool
 }
 
-// New creates a new input component.
-func New() *Input {
-	return &Input{
+// InputOption is a functional option for configuring Input components
+type InputOption func(*Input)
+
+// WithPlaceholder sets the input placeholder
+func WithPlaceholder(placeholder string) InputOption {
+	return func(i *Input) {
+		i.Placeholder = placeholder
+	}
+}
+
+// WithInputType sets the input type
+func WithInputType(inputType InputType) InputOption {
+	return func(i *Input) {
+		i.Type = inputType
+	}
+}
+
+// WithInputVariant sets the input variant
+func WithInputVariant(variant InputVariant) InputOption {
+	return func(i *Input) {
+		i.Variant = variant
+	}
+}
+
+// WithInputSize sets the input size
+func WithInputSize(size InputSize) InputOption {
+	return func(i *Input) {
+		i.Size = size
+	}
+}
+
+// WithLabel sets the input label
+func WithLabel(label string) InputOption {
+	return func(i *Input) {
+		i.Label = label
+	}
+}
+
+// WithHelper sets the helper text
+func WithHelper(helper string) InputOption {
+	return func(i *Input) {
+		i.Helper = helper
+	}
+}
+
+// WithRequired sets the required state
+func WithRequired(required bool) InputOption {
+	return func(i *Input) {
+		i.Required = required
+	}
+}
+
+// WithDisabled sets the disabled state
+func WithInputDisabled(disabled bool) InputOption {
+	return func(i *Input) {
+		i.Disabled = disabled
+	}
+}
+
+// WithOnChange sets the change callback
+func WithOnChange(onChange func(string)) InputOption {
+	return func(i *Input) {
+		i.OnChange = onChange
+	}
+}
+
+// WithOnSubmit sets the submit callback
+func WithOnSubmit(onSubmit func()) InputOption {
+	return func(i *Input) {
+		i.OnSubmit = onSubmit
+	}
+}
+
+// NewInput creates a new Input with the given options
+func NewInput(options ...InputOption) *Input {
+	i := &Input{
 		Type:    InputText,
 		Variant: InputDefault,
 		Size:    InputSizeMedium,
 		editor:  widget.Editor{},
 	}
+
+	for _, option := range options {
+		option(i)
+	}
+
+	return i
 }
 
 // SetText sets the text content of the input.
@@ -292,34 +371,34 @@ func (i *Input) getInputHeight() unit.Dp {
 
 // Text creates a text input with the given placeholder.
 func Text(placeholder string) *Input {
-	i := New()
-	i.Placeholder = placeholder
-	i.Type = InputText
-	return i
+	return NewInput(
+		WithPlaceholder(placeholder),
+		WithInputType(InputText),
+	)
 }
 
 // Password creates a password input with the given placeholder.
 func Password(placeholder string) *Input {
-	i := New()
-	i.Placeholder = placeholder
-	i.Type = InputPassword
-	return i
+	return NewInput(
+		WithPlaceholder(placeholder),
+		WithInputType(InputPassword),
+	)
 }
 
 // Number creates a number input with the given placeholder.
 func Number(placeholder string) *Input {
-	i := New()
-	i.Placeholder = placeholder
-	i.Type = InputNumber
-	return i
+	return NewInput(
+		WithPlaceholder(placeholder),
+		WithInputType(InputNumber),
+	)
 }
 
 // Email creates an email input with the given placeholder.
 func Email(placeholder string) *Input {
-	i := New()
-	i.Placeholder = placeholder
-	i.Type = InputEmail
-	return i
+	return NewInput(
+		WithPlaceholder(placeholder),
+		WithInputType(InputEmail),
+	)
 }
 
 // WithVariant sets the input variant.
