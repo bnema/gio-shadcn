@@ -6,7 +6,7 @@ A Go port of [shadcn/ui](https://ui.shadcn.com/) for [Gio](https://gioui.org/), 
 
 - 🎨 **Themeable**: JSON-based theme configuration with light/dark mode support
 - 🧩 **Modular**: Each component is independently importable
-- 💻 **CLI Tool**: Easy component installation and project setup
+- 💻 **Simple Imports**: Standard Go module imports, no CLI needed
 - 🔧 **Type Safe**: Full Go type safety with validation
 - 📦 **Copy-Paste Friendly**: Components are copied to your project, not imported as dependencies
 - 🎯 **Gio Native**: Built specifically for Gio's immediate-mode architecture
@@ -15,61 +15,35 @@ A Go port of [shadcn/ui](https://ui.shadcn.com/) for [Gio](https://gioui.org/), 
 
 ### Installation
 
-1. Install the CLI tool:
+Add gio-shadcn to your Go project:
 ```bash
-go install github.com/bnema/gio-shadcn/cmd/gio-shadcn@latest
+go get github.com/bnema/gio-shadcn@latest
 ```
 
-2. Initialize a new project:
+### Usage
+
+Import the components you need:
+```go
+import (
+    "github.com/bnema/gio-shadcn/components/button"
+    "github.com/bnema/gio-shadcn/components/card"
+    "github.com/bnema/gio-shadcn/components/input"
+    "github.com/bnema/gio-shadcn/theme"
+)
+```
+
+That's it! No CLI tool needed, no files to download. Use standard Go imports.
+
+### Getting Started
+
+Create a new Go project and add gio-shadcn:
+
 ```bash
-gio-shadcn init my-app
-cd my-app
+mkdir my-gio-app
+cd my-gio-app
+go mod init my-gio-app
+go get github.com/bnema/gio-shadcn@latest
 ```
-
-3. Add components:
-```bash
-gio-shadcn add button
-gio-shadcn add card
-gio-shadcn add input
-```
-
-4. Run your application:
-```bash
-go run main.go
-```
-
-### Manual Setup
-
-If you prefer to set up manually:
-
-1. Add the theme module to your project:
-```bash
-go get github.com/bnema/gio-shadcn/theme
-go get github.com/bnema/gio-shadcn/utils
-```
-
-2. Create a `theme.json` configuration file:
-```json
-{
-  "name": "default",
-  "colors": {
-    "light": {
-      "background": "#ffffff",
-      "foreground": "#0a0a0a",
-      "primary": "#0f172a",
-      "primary-foreground": "#f8fafc"
-    },
-    "dark": {
-      "background": "#0a0a0a",
-      "foreground": "#fafafa",
-      "primary": "#fafafa",
-      "primary-foreground": "#0a0a0a"
-    }
-  }
-}
-```
-
-3. Copy components from the registry to your project.
 
 ## Usage
 
@@ -84,8 +58,8 @@ import (
     "gioui.org/layout"
     "gioui.org/op"
     
-    "your-project/components/button"
-    "your-project/theme"
+    "github.com/bnema/gio-shadcn/components/button"
+    "github.com/bnema/gio-shadcn/theme"
 )
 
 func main() {
@@ -137,10 +111,10 @@ import (
     "gioui.org/layout"
     "gioui.org/op"
     
-    "your-project/components/button"
-    "your-project/components/card"
-    "your-project/components/input"
-    "your-project/theme"
+    "github.com/bnema/gio-shadcn/components/button"
+    "github.com/bnema/gio-shadcn/components/card"
+    "github.com/bnema/gio-shadcn/components/input"
+    "github.com/bnema/gio-shadcn/theme"
 )
 
 func main() {
@@ -202,15 +176,6 @@ func main() {
 }
 ```
 
-## Available Components
-
-| Component | Description | Status |
-|-----------|-------------|--------|
-| Button | Customizable button with variants and sizes | ✅ |
-| Card | Flexible container for content | ✅ |
-| Input | Text input with validation | ✅ |
-| Label | Typography component | ✅ |
-| Titlebar | Window titlebar component | ✅ |
 
 ## Component Variants
 
@@ -325,30 +290,15 @@ if err := theme.ValidateTheme(th); err != nil {
 }
 ```
 
-## CLI Commands
+## Available Components
 
-### Initialize Project
-```bash
-gio-shadcn init [project-name]
-```
-
-### Add Components
-```bash
-gio-shadcn add button
-gio-shadcn add card
-gio-shadcn add input
-```
-
-### List Available Components
-```bash
-gio-shadcn list
-```
-
-### Generate Theme
-```bash
-gio-shadcn theme
-gio-shadcn theme --config custom.json
-```
+| Component | Import Path | Description |
+|-----------|-------------|-------------|
+| Button | `github.com/bnema/gio-shadcn/components/button` | Customizable button with variants and sizes |
+| Card | `github.com/bnema/gio-shadcn/components/card` | Flexible container for content |
+| Input | `github.com/bnema/gio-shadcn/components/input` | Text input with validation |
+| Label | `github.com/bnema/gio-shadcn/components/label` | Typography component |
+| Titlebar | `github.com/bnema/gio-shadcn/components/titlebar` | Window titlebar component |
 
 ## Component API
 
@@ -434,12 +384,7 @@ cd gio-shadcn
 go mod download
 ```
 
-3. Build the CLI:
-```bash
-go build -o gio-shadcn ./cmd/gio-shadcn
-```
-
-4. Run the demo:
+3. Run the demo:
 ```bash
 go run ./cmd/demo-app
 ```

@@ -94,11 +94,11 @@ func NewButton(options ...ButtonOption) *Button {
 		Variant:   theme.VariantDefault,
 		Size:      theme.SizeDefault,
 	}
-	
+
 	for _, option := range options {
 		option(b)
 	}
-	
+
 	return b
 }
 
@@ -107,15 +107,15 @@ func ValidateButton(b *Button) error {
 	if b == nil {
 		return fmt.Errorf("button cannot be nil")
 	}
-	
+
 	if b.clickable == nil {
 		return fmt.Errorf("button must have a clickable widget")
 	}
-	
+
 	if b.Text == "" && b.Icon == nil {
 		return fmt.Errorf("button must have either text or icon")
 	}
-	
+
 	return nil
 }
 
@@ -124,11 +124,11 @@ func (b *Button) SafeLayout(gtx layout.Context, th *theme.Theme) (layout.Dimensi
 	if err := ValidateButton(b); err != nil {
 		return layout.Dimensions{}, err
 	}
-	
+
 	if th == nil {
 		return layout.Dimensions{}, fmt.Errorf("theme cannot be nil")
 	}
-	
+
 	return b.Layout(gtx, th), nil
 }
 

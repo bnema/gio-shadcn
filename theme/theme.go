@@ -61,16 +61,16 @@ func ValidateTheme(t *Theme) error {
 	if t == nil {
 		return fmt.Errorf("theme cannot be nil")
 	}
-	
+
 	// Validate color scheme
 	if err := validateColorScheme(&t.Colors); err != nil {
 		return fmt.Errorf("invalid light colors: %w", err)
 	}
-	
+
 	if err := validateColorScheme(&t.DarkColors); err != nil {
 		return fmt.Errorf("invalid dark colors: %w", err)
 	}
-	
+
 	return nil
 }
 
@@ -78,7 +78,7 @@ func validateColorScheme(cs *ColorScheme) error {
 	if cs == nil {
 		return fmt.Errorf("color scheme cannot be nil")
 	}
-	
+
 	// Check that all colors have non-zero alpha
 	colors := []struct {
 		name  string
@@ -92,13 +92,13 @@ func validateColorScheme(cs *ColorScheme) error {
 		{"secondary-foreground", cs.SecondaryFg},
 		{"border", cs.Border},
 	}
-	
+
 	for _, c := range colors {
 		if c.color.A == 0 {
 			return fmt.Errorf("color %s has zero alpha", c.name)
 		}
 	}
-	
+
 	return nil
 }
 
