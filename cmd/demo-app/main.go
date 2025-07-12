@@ -50,10 +50,10 @@ func run(w *app.Window) error {
 	updateWindowColors(w, th)
 
 	// Initialize title bar
-	tb := titlebar.New(titlebar.Config{
-		Title:  "Gio-shadcn Demo",
-		Window: w,
-	})
+	tb := titlebar.NewTitleBar(
+		titlebar.WithTitle("Gio-shadcn Demo"),
+		titlebar.WithWindow(w),
+	)
 
 	// Zoom state
 	var zoomScale float32 = 1.0
@@ -195,7 +195,7 @@ func run(w *app.Window) error {
 	// Input component
 	textInput := input.Text("Enter your name...")
 
-	titleLabel := label.NewTypography("Welcome to Gio-shadcn", label.H1, "")
+	titleLabel := label.NewTypography("Demo-app", label.H1, "")
 	subtitleLabel := label.NewTypography("A shadcn/ui port for Gio", label.P, "")
 	zoomHelpLabel := label.NewTypography("Use buttons or Ctrl+/- to zoom, Ctrl+0 to reset", label.Small, "")
 
