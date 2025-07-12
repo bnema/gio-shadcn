@@ -6,7 +6,16 @@ import (
 	"gioui.org/unit"
 )
 
-// Typography defines the typography system
+// Typography defines the complete typography system for gio-shadcn themes.
+// It provides a comprehensive set of font families, sizes, line heights, and.
+// letter spacing values to ensure consistent and readable text across all.
+// components. The typography system follows modern web standards and provides
+// good readability across different screen sizes and resolutions.
+//
+// Usage example:.
+//
+//	style := th.Typography.H1(&th.Colors)
+//	// Apply style to text rendering
 type Typography struct {
 	// Font families
 	FontSans  []font.Face
@@ -39,7 +48,10 @@ type Typography struct {
 	LetterSpacingWidest  float32
 }
 
-// TextStyle represents a complete text style configuration
+// TextStyle represents a complete text style configuration.
+// It combines all the typography properties needed to render text consistently,.
+// including size, color, weight, alignment, and spacing. TextStyle is used
+// by typography helper methods and can be applied to text rendering.
 type TextStyle struct {
 	Size          unit.Sp
 	Color         *ColorScheme
@@ -50,7 +62,11 @@ type TextStyle struct {
 	LetterSpacing float32
 }
 
-// DefaultTypography returns the default typography configuration
+// DefaultTypography returns the default typography configuration.
+// The typography system provides a harmonious scale of font sizes, line heights,.
+// and letter spacing values. Font families default to system fonts when not
+// explicitly set. The scale follows modern typography principles with good
+// readability and visual hierarchy.
 func DefaultTypography() Typography {
 	return Typography{
 		FontSans:  []font.Face{}, // Will use system default
@@ -81,7 +97,9 @@ func DefaultTypography() Typography {
 	}
 }
 
-// Predefined text styles
+// H1 returns a text style for main headings.
+// H1 uses the largest font size (4XL) with bold weight and tight line height.
+// for maximum visual impact. Suitable for page titles and main headings.
 func (t *Typography) H1(colors *ColorScheme) TextStyle {
 	return TextStyle{
 		Size:          t.FontSize4XL,
@@ -94,6 +112,7 @@ func (t *Typography) H1(colors *ColorScheme) TextStyle {
 	}
 }
 
+// H2 returns the text style for H2 headings.
 func (t *Typography) H2(colors *ColorScheme) TextStyle {
 	return TextStyle{
 		Size:          t.FontSize3XL,
@@ -106,6 +125,7 @@ func (t *Typography) H2(colors *ColorScheme) TextStyle {
 	}
 }
 
+// H3 returns the text style for H3 headings.
 func (t *Typography) H3(colors *ColorScheme) TextStyle {
 	return TextStyle{
 		Size:          t.FontSize2XL,
@@ -118,6 +138,7 @@ func (t *Typography) H3(colors *ColorScheme) TextStyle {
 	}
 }
 
+// H4 returns the text style for H4 headings.
 func (t *Typography) H4(colors *ColorScheme) TextStyle {
 	return TextStyle{
 		Size:          t.FontSizeXL,
@@ -130,6 +151,7 @@ func (t *Typography) H4(colors *ColorScheme) TextStyle {
 	}
 }
 
+// Body returns the text style for body text.
 func (t *Typography) Body(colors *ColorScheme) TextStyle {
 	return TextStyle{
 		Size:          t.FontSizeBase,
@@ -142,6 +164,7 @@ func (t *Typography) Body(colors *ColorScheme) TextStyle {
 	}
 }
 
+// BodySmall returns the text style for small body text.
 func (t *Typography) BodySmall(colors *ColorScheme) TextStyle {
 	return TextStyle{
 		Size:          t.FontSizeSM,
@@ -154,6 +177,7 @@ func (t *Typography) BodySmall(colors *ColorScheme) TextStyle {
 	}
 }
 
+// Caption returns the text style for caption text.
 func (t *Typography) Caption(colors *ColorScheme) TextStyle {
 	return TextStyle{
 		Size:          t.FontSizeXS,

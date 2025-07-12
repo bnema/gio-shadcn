@@ -4,7 +4,17 @@ import (
 	"image/color"
 )
 
-// ColorScheme represents the color palette for the theme
+// ColorScheme represents the complete color palette for gio-shadcn themes.
+// The color scheme follows shadcn/ui design tokens and provides semantic.
+// color definitions that work consistently across light and dark modes.
+// All colors are defined as NRGBA values for use with Gio's color system.
+//
+// The color scheme includes:.
+// • Core colors (background, foreground, card).
+// • Brand colors (primary, secondary).
+// • Content colors (muted, accent).
+// • State colors (destructive).
+// • Border colors (border, input, ring).
 type ColorScheme struct {
 	// Core colors
 	Background color.NRGBA // --background
@@ -40,7 +50,18 @@ type ColorScheme struct {
 	Ring   color.NRGBA // --ring
 }
 
-// LightColorScheme returns the default light color scheme
+// LightColorScheme returns the default light color scheme for gio-shadcn themes.
+// This color scheme provides a clean, modern light theme with high contrast.
+// and excellent readability. Colors are based on shadcn/ui design tokens
+// using zinc color scale for neutrals and red for destructive actions.
+//
+// The light scheme uses:.
+// • White backgrounds with dark zinc foregrounds.
+// • Dark primary colors with light foregrounds.
+// • Light secondary/muted colors for subtle elements.
+// • Red destructive colors for dangerous actions.
+//
+//nolint:dupl // Light and dark color schemes are intentionally similar but different
 func LightColorScheme() ColorScheme {
 	return ColorScheme{
 		Background:    color.NRGBA{R: 255, G: 255, B: 255, A: 255}, // white
@@ -65,7 +86,18 @@ func LightColorScheme() ColorScheme {
 	}
 }
 
-// DarkColorScheme returns the default dark color scheme
+// DarkColorScheme returns the default dark color scheme for gio-shadcn themes.
+// This color scheme provides a sophisticated dark theme with proper contrast.
+// ratios for accessibility. Colors are carefully chosen to reduce eye strain
+// while maintaining excellent readability and visual hierarchy.
+//
+// The dark scheme uses:.
+// • Dark zinc backgrounds with light foregrounds.
+// • Light primary colors with dark foregrounds.
+// • Medium zinc secondary/muted colors for subtle elements.
+// • Dark red destructive colors for dangerous actions.
+//
+//nolint:dupl // Light and dark color schemes are intentionally similar but different
 func DarkColorScheme() ColorScheme {
 	return ColorScheme{
 		Background:    color.NRGBA{R: 9, G: 9, B: 11, A: 255},      // zinc-950

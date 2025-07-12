@@ -2,7 +2,17 @@ package theme
 
 import "gioui.org/unit"
 
-// SpacingScale defines the spacing system
+// SpacingScale defines the spacing system for consistent layout spacing.
+// The spacing scale follows a 4px base unit system, providing harmonious.
+// spacing options that work well across different screen sizes and components.
+// All values are in density-independent pixels (dp) for proper scaling.
+//
+// Usage example:.
+//
+//	layout.Inset{
+//		Top:    th.Spacing.Space4,  // 16dp
+//		Bottom: th.Spacing.Space8,  // 32dp
+//	}.Layout(gtx, content)
 type SpacingScale struct {
 	// Base spacing units (in dp)
 	Space0  unit.Dp // 0px
@@ -37,7 +47,20 @@ type SpacingScale struct {
 	Space96 unit.Dp // 384px
 }
 
-// RadiusScale defines the border radius system
+// RadiusScale defines the border radius system for consistent rounded corners.
+// The radius scale provides a range of border radius values from sharp corners.
+// to fully rounded elements. Values are in density-independent pixels (dp).
+//
+// Usage example:.
+//
+//	// Apply medium radius to a component
+//	paint.FillShape(gtx.Ops, color, clip.RRect{
+//		Rect: bounds,
+//		NE:   int(gtx.Metric.Dp(th.Radius.RadiusMD)),
+//		NW:   int(gtx.Metric.Dp(th.Radius.RadiusMD)),
+//		SE:   int(gtx.Metric.Dp(th.Radius.RadiusMD)),
+//		SW:   int(gtx.Metric.Dp(th.Radius.RadiusMD)),
+//	}.Op(gtx.Ops))
 type RadiusScale struct {
 	RadiusNone unit.Dp // 0px
 	RadiusSM   unit.Dp // 2px
@@ -50,7 +73,10 @@ type RadiusScale struct {
 	RadiusFull unit.Dp // 9999px (effectively full rounding)
 }
 
-// DefaultSpacing returns the default spacing configuration
+// DefaultSpacing returns the default spacing configuration.
+// The spacing scale uses a 4dp base unit with consistent progression,.
+// providing harmonious spacing options for layouts and components.
+// Values range from 0dp to 384dp to cover all common spacing needs.
 func DefaultSpacing() SpacingScale {
 	return SpacingScale{
 		Space0:  unit.Dp(0),
@@ -86,7 +112,10 @@ func DefaultSpacing() SpacingScale {
 	}
 }
 
-// DefaultRadius returns the default radius configuration
+// DefaultRadius returns the default border radius configuration.
+// The radius scale provides a range from sharp corners (0dp) to fully.
+// rounded elements (9999dp). Values are chosen to provide good visual
+// hierarchy and work well with the overall design system.
 func DefaultRadius() RadiusScale {
 	return RadiusScale{
 		RadiusNone: unit.Dp(0),
