@@ -8,21 +8,6 @@ A Go port of [shadcn/ui](https://ui.shadcn.com/) for [Gio](https://gioui.org/), 
 
 gio-shadcn provides a collection of reusable, themeable UI components for Gio applications. Each component follows consistent design patterns, making it easy to build cohesive user interfaces with minimal effort.
 
-### Key Benefits
-- **🎨 Consistent Design**: All components follow shadcn/ui design principles
-- **🔧 Highly Customizable**: Flexible theming system with runtime theme switching
-- **📦 Modular Architecture**: Import only what you need
-- **🚀 Developer Friendly**: Functional options pattern for intuitive API
-- **💪 Type Safe**: Full Go type safety with compile-time checks
-
-## Features
-
-- 🎨 **Themeable**: JSON-based theme configuration with light/dark mode support
-- 🧩 **Modular**: Each component is independently importable
-- 💻 **Simple Imports**: Standard Go module imports, no CLI needed
-- 🔧 **Type Safe**: Full Go type safety with validation
-- 🎯 **Gio Native**: Built specifically for Gio's immediate-mode architecture
-
 ## Work in Progress
 
 ⚠️ **This project is under active development.** While functional, some features are still being implemented:
