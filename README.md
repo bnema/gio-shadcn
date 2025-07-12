@@ -2,7 +2,7 @@
 
 A Go port of [shadcn/ui](https://ui.shadcn.com/) for [Gio](https://gioui.org/), bringing beautiful, accessible, and customizable UI components to your Gio applications.
 
-<img src="assets/demo-app.png" alt="Demo App" width="800" style="max-width: 100%; height: auto;">
+<img src="assets/demo-app.png" alt="Demo App" width="50%" style="max-width: 50%; height: auto;">
 
 ## Overview
 
@@ -931,9 +931,3 @@ MIT License - see LICENSE file for details
 - Inspired by [shadcn/ui](https://ui.shadcn.com/)
 - Built with [Gio](https://gioui.org/)
 - Thanks to all contributors
-
-## Support
-
-- [GitHub Issues](https://github.com/bnema/gio-shadcn/issues)
-- [Documentation](https://github.com/bnema/gio-shadcn/wiki)
-- [Examples](https://github.com/bnema/gio-shadcn/tree/main/examples)
